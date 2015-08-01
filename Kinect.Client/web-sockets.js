@@ -12,7 +12,7 @@
     }
 
     if (!window.WebSocket) {
-        status.innerHTML = "Your browser does not support web sockets!";
+        status.innerHTML = "Your browser does not support web sockets! :'-(";
         return;
     }
 
