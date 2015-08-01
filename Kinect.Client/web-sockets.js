@@ -40,18 +40,126 @@
             var jsonObject = JSON.parse(event.data);
 
             // Display the skeleton joints.
-            for (var i = 0; i < jsonObject.skeletons.length; i++) {
-                for (var j = 0; j < jsonObject.skeletons[i].joints.length; j++) {
-                    var joint = jsonObject.skeletons[i].joints[j];
-
-                    // Draw!!!
-                    context.fillStyle = "#FF0000";
-                    context.beginPath();
-                    context.arc(joint.x, joint.y, 10, 0, Math.PI * 2, true);
-                    context.closePath();
-                    context.fill();
-                }
-            }
+			context.beginPath();
+			
+			// head to neck
+			context.moveTo(jsonObject.skeletons[i].joints[3].x,jsonObject.skeletons[i].joints[3].y);
+			context.lineTo(jsonObject.skeletons[i].joints[2].x,jsonObject.skeletons[i].joints[2].y);
+			context.stroke();
+			
+			// neck to spine shoulder
+			context.moveTo(jsonObject.skeletons[i].joints[2].x,jsonObject.skeletons[i].joints[2].y);
+			context.lineTo(jsonObject.skeletons[i].joints[20].x,jsonObject.skeletons[i].joints[20].y);
+			
+			// spine shoulder to left shoulder
+			context.moveTo(jsonObject.skeletons[i].joints[20].x,jsonObject.skeletons[i].joints[20].y);
+			context.lineTo(jsonObject.skeletons[i].joints[4].x,jsonObject.skeletons[i].joints[4].y);
+			
+			// spine shoulder to right shoulder
+			context.moveTo(jsonObject.skeletons[i].joints[20].x,jsonObject.skeletons[i].joints[20].y);
+			context.lineTo(jsonObject.skeletons[i].joints[8].x,jsonObject.skeletons[i].joints[8].y);
+			
+			// right shoulder to right elbow
+			context.moveTo(jsonObject.skeletons[i].joints[8].x,jsonObject.skeletons[i].joints[8].y);
+			context.lineTo(jsonObject.skeletons[i].joints[9].x,jsonObject.skeletons[i].joints[9].y);
+			context.stroke();
+			
+			// right elbow to right wrist
+			context.moveTo(jsonObject.skeletons[i].joints[9].x,jsonObject.skeletons[i].joints[9].y);
+			context.lineTo(jsonObject.skeletons[i].joints[10].x,jsonObject.skeletons[i].joints[10].y);
+			context.stroke();
+			
+			// right wrist to right hand
+			context.moveTo(jsonObject.skeletons[i].joints[10].x,jsonObject.skeletons[i].joints[10].y);
+			context.lineTo(jsonObject.skeletons[i].joints[11].x,jsonObject.skeletons[i].joints[11].y);
+			context.stroke();
+			
+			// right hand to right hand tip
+			context.moveTo(jsonObject.skeletons[i].joints[11].x,jsonObject.skeletons[i].joints[11].y);
+			context.lineTo(jsonObject.skeletons[i].joints[23].x,jsonObject.skeletons[i].joints[23].y);
+			context.stroke();
+			
+			// right hand to right hand thumb
+			context.moveTo(jsonObject.skeletons[i].joints[11].x,jsonObject.skeletons[i].joints[11].y);
+			context.lineTo(jsonObject.skeletons[i].joints[24].x,jsonObject.skeletons[i].joints[24].y);
+			context.stroke();
+			
+			// left shoulder to left elbow
+			context.moveTo(jsonObject.skeletons[i].joints[4].x,jsonObject.skeletons[i].joints[4].y);
+			context.lineTo(jsonObject.skeletons[i].joints[5].x,jsonObject.skeletons[i].joints[5].y);
+			context.stroke();
+			
+			// left elbow to left wrist
+			context.moveTo(jsonObject.skeletons[i].joints[5].x,jsonObject.skeletons[i].joints[5].y);
+			context.lineTo(jsonObject.skeletons[i].joints[6].x,jsonObject.skeletons[i].joints[6].y);
+			context.stroke();
+			
+			// left wrist to left hand
+			context.moveTo(jsonObject.skeletons[i].joints[6].x,jsonObject.skeletons[i].joints[6].y);
+			context.lineTo(jsonObject.skeletons[i].joints[7].x,jsonObject.skeletons[i].joints[7].y);
+			context.stroke();
+			
+			// left hand to left hand tip
+			context.moveTo(jsonObject.skeletons[i].joints[7].x,jsonObject.skeletons[i].joints[7].y);
+			context.lineTo(jsonObject.skeletons[i].joints[21].x,jsonObject.skeletons[i].joints[21].y);
+			context.stroke();
+			
+			// left hand to left thumb
+			context.moveTo(jsonObject.skeletons[i].joints[7].x,jsonObject.skeletons[i].joints[7].y);
+			context.lineTo(jsonObject.skeletons[i].joints[22].x,jsonObject.skeletons[i].joints[22].y);
+			context.stroke();
+			
+			// spine shoulder to spine mid
+			context.moveTo(jsonObject.skeletons[i].joints[20].x,jsonObject.skeletons[i].joints[20].y);
+			context.lineTo(jsonObject.skeletons[i].joints[1].x,jsonObject.skeletons[i].joints[1].y);
+			context.stroke();
+			
+			// spine mid to spine base
+			context.moveTo(jsonObject.skeletons[i].joints[1].x,jsonObject.skeletons[i].joints[1].y);
+			context.lineTo(jsonObject.skeletons[i].joints[0].x,jsonObject.skeletons[i].joints[0].y);
+			context.stroke();
+			
+			// spine base to hip left
+			context.moveTo(jsonObject.skeletons[i].joints[0].x,jsonObject.skeletons[i].joints[0].y);
+			context.lineTo(jsonObject.skeletons[i].joints[12].x,jsonObject.skeletons[i].joints[12].y);
+			context.stroke();
+			
+			// spine base to hip right
+			context.moveTo(jsonObject.skeletons[i].joints[0].x,jsonObject.skeletons[i].joints[0].y);
+			context.lineTo(jsonObject.skeletons[i].joints[16].x,jsonObject.skeletons[i].joints[16].y);
+			context.stroke();
+			
+			// spine base to knee right
+			context.moveTo(jsonObject.skeletons[i].joints[16].x,jsonObject.skeletons[i].joints[16].y);
+			context.lineTo(jsonObject.skeletons[i].joints[17].x,jsonObject.skeletons[i].joints[17].y);
+			context.stroke();
+			
+			// knee right to ankle right
+			context.moveTo(jsonObject.skeletons[i].joints[17].x,jsonObject.skeletons[i].joints[17].y);
+			context.lineTo(jsonObject.skeletons[i].joints[18].x,jsonObject.skeletons[i].joints[18].y);
+			context.stroke();
+			
+			// ankle right to foot right
+			context.moveTo(jsonObject.skeletons[i].joints[18].x,jsonObject.skeletons[i].joints[18].y);
+			context.lineTo(jsonObject.skeletons[i].joints[19].x,jsonObject.skeletons[i].joints[19].y);
+			context.stroke();
+			
+			// spine base to knee left
+			context.moveTo(jsonObject.skeletons[i].joints[12].x,jsonObject.skeletons[i].joints[12].y);
+			context.lineTo(jsonObject.skeletons[i].joints[13].x,jsonObject.skeletons[i].joints[13].y);
+			context.stroke();
+			
+			// knee left to ankle left
+			context.moveTo(jsonObject.skeletons[i].joints[13].x,jsonObject.skeletons[i].joints[13].y);
+			context.lineTo(jsonObject.skeletons[i].joints[14].x,jsonObject.skeletons[i].joints[14].y);
+			context.stroke();
+			
+			// ankle left to foot left
+			context.moveTo(jsonObject.skeletons[i].joints[14].x,jsonObject.skeletons[i].joints[14].y);
+			context.lineTo(jsonObject.skeletons[i].joints[15].x,jsonObject.skeletons[i].joints[15].y);
+			context.stroke();
+			
+			context.closePath();
         }
         else if (event.data instanceof Blob) {
             // RGB FRAME DATA
