@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -7,6 +8,13 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using Microsoft.Kinect;
 using System.Windows;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
 
 namespace Kinect.Server
 {
@@ -39,14 +47,25 @@ namespace Kinect.Server
             public string Name { get; set; }
 
             [DataMember(Name = "x")]
-            public double X { get; set; }
+            public string X { get; set; }
 
             [DataMember(Name = "y")]
-            public double Y { get; set; }
+            public string Y { get; set; }
 
             [DataMember(Name = "z")]
-            public double Z { get; set; }
+            public string Z { get; set; }
         }
+
+        public static void Log(string logMessage, TextWriter w)
+        {
+           /* w.Write("\r\nLog Entry : ");
+            w.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
+                DateTime.Now.ToLongDateString());
+            w.WriteLine("  :");
+            w.WriteLine("  :{0}", logMessage);
+            w.WriteLine("-------------------------------");*/
+        }
+
 
         /// <summary>
         /// Serializes an array of Kinect skeletons into an array of JSON skeletons.
@@ -55,52 +74,66 @@ namespace Kinect.Server
         /// <param name="mapper">The coordinate mapper.</param>
         /// <param name="mode">Mode (color or depth).</param>
         /// <returns>A JSON representation of the skeletons.</returns>
-        public static string Serialize(this List<Skeleton> skeletons, CoordinateMapper mapper, Mode mode)
+        public static string Serialize(this List<Body> skeletons, CoordinateMapper mapper, Mode mode)
         {
             JSONSkeletonCollection jsonSkeletons = new JSONSkeletonCollection { Skeletons = new List<JSONSkeleton>() };
 
-            foreach (var skeleton in skeletons)
+            foreach (Body skeleton in skeletons) //check if the skeleton is tracked first
             {
-                JSONSkeleton jsonSkeleton = new JSONSkeleton
+                if (skeleton.IsTracked)
                 {
-                    ID = skeleton.TrackingId.ToString(),
-                    Joints = new List<JSONJoint>()
-                };
-
-                foreach (Joint joint in skeleton.Joints)
-                {
-                    Point point = new Point();
-
-                    switch (mode)
+                    JSONSkeleton jsonSkeleton = new JSONSkeleton
                     {
-                        case Mode.Color:
-                            ColorImagePoint colorPoint = mapper.MapSkeletonPointToColorPoint(joint.Position, ColorImageFormat.RgbResolution640x480Fps30);
-                            point.X = colorPoint.X;
-                            point.Y = colorPoint.Y;
-                            break;
-                        case Mode.Depth:
-                            DepthImagePoint depthPoint = mapper.MapSkeletonPointToDepthPoint(joint.Position, DepthImageFormat.Resolution640x480Fps30);
-                            point.X = depthPoint.X;
-                            point.Y = depthPoint.Y;
-                            break;
-                        default:
-                            break;
+                        ID = skeleton.TrackingId.ToString(),
+                        Joints = new List<JSONJoint>()
+                    };
+
+
+                    IReadOnlyDictionary<JointType, Joint> joints = skeleton.Joints;
+                    var jointPoints = new Dictionary<JointType, Point>();
+
+                    foreach (JointType jointType in joints.Keys)
+                    {
+                        Joint joint = joints[jointType];
+
+
+                        Point point = new Point();
+
+                        switch (mode)
+                        {
+                            case Mode.Color:
+                                ColorSpacePoint colorPoint = mapper.MapCameraPointToColorSpace(joint.Position);
+                                point.X = colorPoint.X;
+                                point.Y = colorPoint.Y;
+                                break;
+                            case Mode.Depth:
+                                DepthSpacePoint depthPoint = mapper.MapCameraPointToDepthSpace(joint.Position);
+                                point.X = depthPoint.X;
+                                point.Y = depthPoint.Y;
+                                break;
+                            default:
+                                break;
+                        }
+
+
+                        jsonSkeleton.Joints.Add(new JSONJoint
+                        {
+                            Name = joint.JointType.ToString().ToLower(),
+                            X = point.X.ToString(),
+                            Y = point.Y.ToString(),
+                            Z = joint.Position.Z.ToString()
+                        });
                     }
 
-                    jsonSkeleton.Joints.Add(new JSONJoint
-                    {
-                        Name = joint.JointType.ToString().ToLower(),
-                        X = point.X,
-                        Y = point.Y,
-                        Z = joint.Position.Z
-                    });
+                    jsonSkeletons.Skeletons.Add(jsonSkeleton);
                 }
-
-                jsonSkeletons.Skeletons.Add(jsonSkeleton);
             }
+        
 
             return Serialize(jsonSkeletons);
+        
         }
+
 
         /// <summary>
         /// Serializes an object to JSON.
@@ -118,5 +151,7 @@ namespace Kinect.Server
                 return Encoding.Default.GetString(ms.ToArray());
             }
         }
+
+
     }
 }

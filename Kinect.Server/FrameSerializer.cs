@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 namespace Kinect.Server
 {
     /// <summary>
-    /// Converts a Kinect frame into an HTML5 blob.
+    /// Converts a Kinect frame into a HTML5 blob.
     /// </summary>
     public static class FrameSerializer
     {

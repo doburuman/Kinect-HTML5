@@ -44,18 +44,20 @@ namespace Kinect.Server
         /// </summary>
         /// <param name="frame">The specified color frame.</param>
         /// <returns>A binary representation of the frame.</returns>
-        public static byte[] Serialize(this ColorImageFrame frame)
+        public static byte[] Serialize(this ColorFrame frame)
         {
             if (_colorBitmap == null)
             {
-                _colorWidth = frame.Width;
-                _colorHeight = frame.Height;
+                _colorWidth = frame.FrameDescription.Width;
+                _colorHeight = frame.FrameDescription.Height;
                 _colorStride = _colorWidth * Constants.PIXEL_FORMAT.BitsPerPixel / 8;
-                _colorPixels = new byte[frame.PixelDataLength];
+                //_colorPixels = new byte[frame.PixelDataLength];
+                _colorPixels = new byte[frame.FrameDescription.LengthInPixels];
                 _colorBitmap = new WriteableBitmap(_colorWidth, _colorHeight, Constants.DPI, Constants.DPI, Constants.PIXEL_FORMAT, null);
             }
 
-            frame.CopyPixelDataTo(_colorPixels);
+           // frame.CopyPixelDataTo(_colorPixels);
+            frame.CopyRawFrameDataToArray(_colorPixels);
 
             _colorBitmap.WritePixels(new Int32Rect(0, 0, _colorWidth, _colorHeight), _colorPixels, _colorStride, 0);
 
